@@ -1,0 +1,20 @@
+SmartLibrary Application DocumentationThis project implements a desktop application for managing a university library system, focusing on integrated database design (PostgreSQL) and object-oriented backend logic (Python/PyQt5).1. Project Overview and ArchitectureThe application is built on a Three-Tier Architecture following the Model-View-Controller (MVC) pattern:ComponentTechnologyRoleData Layer (Model)PostgreSQLStores all library data (Books, Users, Loans) and enforces critical business rules via Triggers (Max 3 Loans, Book Availability).Logic Layer (Controller)Python (OOP) & DAOContains the Data Access Object (DAO) to handle database transactions and the core object models (User, Book).Presentation Layer (View)PyQt5Provides the desktop graphical user interface (GUI) for users and librarians.2. Prerequisites and DependenciesBefore running the application, you must have the following software installed:A. DatabasePostgreSQL: Version 12 or newer.Credentials: Ensure you use the exact credentials defined in SmartLibManager_dao.py.B. Python EnvironmentPython: Version 3.8+ (Recommended).Dependencies: Create and activate a virtual environment, then install the required Python packages:Bash# Create a virtual environment
+python -m venv venv
+
+# Activate the environment (Windows)
+.\venv\Scripts\activate
+
+# Activate the environment (Linux/macOS)
+source venv/bin/activate
+
+# Install dependencies (as specified in the project scope)
+pip install psycopg2-binary PyQt5
+3. Setup and Installation GuideFollow these steps to set up the database and launch the application.Step 1: Database InitializationOpen your PostgreSQL client (pgAdmin, psql, or command line).Execute the smartlibrary_schema.sql script file. This script performs the following critical actions:Creates all necessary tables (Users, Books, Loans, Roles, etc.).Creates all Triggers and Functions to enforce data integrity (e.g., prevent_excess_loans).Inserts sample records (at least 10 per entity) for immediate testing.Step 2: Configure Database CredentialsOpen the file SmartLibManager_dao.py.Locate the self.db_config dictionary in the __init__ method and ensure the user, password, and host settings match your local PostgreSQL configuration.Python        self.db_config = {
+            "dbname": "smartlibrary_db",  # Match the name from your SQL script
+            "user": "postgres",          # Your PostgreSQL username
+            "password": "password",      # <--- IMPORTANT: Update this to your actual password!
+            "host": "localhost",
+            "port": "5432"
+        }
+Step 3: Run the ApplicationEnsure your virtual environment is active.Run the main application file:Bashpython smartlibrary_app.py
+4. Test CredentialsUse these sample credentials to test the application's different access levels:RoleUsernamePasswordAccess LevelLibrarianadmin_sarahpasswordFull access (Add Books, View Members, Dashboard).Membermem_johnpasswordLoan management, Search Catalog, Join Clubs.5. Key Features and Architectural HighlightsCore Functional FeaturesAuthentication: Role-based login for Librarians and Members.Catalog: Dynamic search and display of all available books.Loan Management: Borrowing and returning of books, automatically updating book availability.Club Management: Members can view and join various book clubs.Admin Tools: Librarians can add new books and view a comprehensive list of all active members.Dashboard: Real-time summary of total books, members, and active loans.Architectural AchievementsAdvanced SQL Triggers: The Max 3 Loans rule and Book Availability toggle are enforced directly by the database, not Python code.OOP Principles: Demonstrated through Inheritance (Librarian/Member extending User) and Encapsulation (protected attributes).Decoupling: The DAO separates database queries from the PyQt5 GUI, promoting clean code structure.Live Synchronization: The application implements refresh_dashboard_data() to ensure the Active Loans count is instantly updated after any successful borrow or return transaction, guaranteeing data consistency.
